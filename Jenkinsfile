@@ -6,7 +6,7 @@ pipeline {
                 script {
                     def remoteMachine = [
                         name: 'Docker-pc',
-                        host: '13.232.22.180',
+                        host: '3.110.189.138',
                         user: 'ubuntu',
                         credentials: 'u112'
                     ]
