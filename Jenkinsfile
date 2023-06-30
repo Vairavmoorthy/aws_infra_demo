@@ -1,43 +1,67 @@
 pipeline {
-    agent any
-    stages {
-        stage('Deploy to remote machine') {
-            steps {
-                script {
-                    def remoteMachine = [
-                        name: 'Docker-pc',
-                        host: '13.232.22.180',
-                        user: 'ubuntu',
-                        credentials: 'u112'
-                    ]
-                }
-            }
-        }
+  agent any
 
-        stage('Docker login') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'Dt20',
-                        usernameVariable: 'DOCKER_USERNAME',
-                        passwordVariable: 'DOCKER_PASSWORD'
-                    )
-                ]) {
-                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                }
-            }
-        }
-
-        stage('Pull Image') {
-            steps {
-                sh 'docker pull vairav7590/vairav'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh 'docker run -d -p 9090:80 vairav7590/vairav'
-            }
-        }
+  stages {
+    stage('Checkout') {
+      steps {
+        git 'https://github.com/Vairavmoorthy/dockerdeployment.git'
+      }
     }
+
+    stage('Deploy to Remote Machine') {
+      steps {
+        script {
+          // Define your remote machine details
+          def remoteMachine = [
+            name: 'RemoteMachine',
+            host: '3.7.71.17',
+            user: 'ubuntu',
+            credentialsId: 'u112'
+          ]
+          
+          // SSH into the remote machine
+          sshagent(credentials: [remoteMachine.credentialsId]) {
+            // Execute Docker login command on the remote host
+            sh "ssh ${remoteMachine.user}@${remoteMachine.host} 'docker login -u <DOCKER_USERNAME> -p <DOCKER_PASSWORD> <DOCKER_REGISTRY>'"
+          }
+        }
+      }
+    }
+
+    stage('Pull Image') {
+      steps {
+        // Pull the Docker image on the remote host
+        script {
+          def remoteMachine = [
+            name: 'RemoteMachine',
+            host: '3.7.71.17',
+            user: 'ubuntu',
+            credentialsId: 'u112'
+          ]
+          
+          sshagent(credentials: [remoteMachine.credentialsId]) {
+            sh "ssh ${remoteMachine.user}@${remoteMachine.host} 'docker pull vairav7590/vairav'"
+          }
+        }
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        // Run the Docker container on the remote host
+        script {
+          def remoteMachine = [
+            name: 'RemoteMachine',
+            host: '3.7.71.17',
+            user: 'ubuntu',
+            credentialsId: 'u112'
+          ]
+          
+          sshagent(credentials: [remoteMachine.credentialsId]) {
+            sh "ssh ${remoteMachine.user}@${remoteMachine.host} 'docker run -d -p 9090:80 vairav7590/vairav'"
+          }
+        }
+      }
+    }
+  }
 }
