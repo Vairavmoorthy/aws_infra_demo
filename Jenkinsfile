@@ -8,7 +8,7 @@ pipeline {
             }
         }
 
-        stage('Build Infrastructure') {
+        stage('Destroy executed') {
             steps {
                 withAWS(credentials: '112') {
                     sh 'terraform destroy -auto-approve '
@@ -18,7 +18,7 @@ pipeline {
             }
         }
 
-        stage('Create destroy') {
+        stage('Infrastructure destroyed') {
             steps {
                 sh 'echo "destroying instance"'
                 // Add commands or scripts to create the instance using desired tool/API
