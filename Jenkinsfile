@@ -1,42 +1,27 @@
 pipeline {
     agent any
+
     stages {
-        stage('Deploy to remote machine') {
+        stage('Checkout') {
             steps {
-                script {
-                    def remoteMachine = [
-                        name: 'Docker-pc',
-                        host: '3.110.189.138',
-                        user: 'ubuntu',
-                        credentials: 'u112'
-                    ]
+                git 'https://github.com/Vairavmoorthy/aws_demo.git'
+            }
+        }
+
+        stage('Build Infrastructure') {
+            steps {
+                withAWS(credentials: '112') {
+                    //sh 'terraform init'
+                   // sh 'terraform plan -out=tfplan'
+                    sh 'terraform apply -auto-approve'
                 }
             }
         }
 
-        stage('Docker login') {
+        stage('Create Infrastructure') {
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'Dt20',
-                        usernameVariable: 'DOCKER_USERNAME',
-                        passwordVariable: 'DOCKER_PASSWORD'
-                    )
-                ]) {
-                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                }
-            }
-        }
-
-        stage('Pull Image') {
-            steps {
-                sh 'docker pull vairav7590/vairav'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh 'docker run -d -p 9090:80 vairav7590/vairav'
+                sh 'echo "Creating jenkins Instance"'
+                
             }
         }
     }
