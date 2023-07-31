@@ -1,5 +1,4 @@
 #!/bin/bash
-
 sudo apt update
 sudo apt install openjdk-17-jre
 curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
