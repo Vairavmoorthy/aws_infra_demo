@@ -57,7 +57,7 @@ resource "aws_instance" "ubuntu-20" {
   associate_public_ip_address = true
 
   tags = {
-    Name = "docker-pc"
+    Name = "jt-pc"
   }
 
 }
