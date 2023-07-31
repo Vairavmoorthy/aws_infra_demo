@@ -11,7 +11,7 @@ pipeline {
         stage('Destroy executed') {
             steps {
                 withAWS(credentials: '112') {
-                    sh 'terraform init'
+                    //sh 'terraform init'
                     sh 'terraform destroy -parallelism=6 -auto-approve'
                    
                    
