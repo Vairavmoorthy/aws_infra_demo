@@ -11,9 +11,9 @@ pipeline {
         stage('Build Infrastructure') {
             steps {
                 withAWS(credentials: '112') {
-                    //sh 'terraform init'
+                    sh 'terraform init'
                    // sh 'terraform plan -out=tfplan'
-                    sh 'terraform apply -auto-approve'
+                    sh 'terraform apply -parallelism=10 -auto-approve'
                 }
             }
         }
