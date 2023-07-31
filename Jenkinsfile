@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Vairavmoorthy/aws_demo.git'
+                git 'https://github.com/Vairavmoorthy/aws_infra_demo.git'
             }
         }
 
